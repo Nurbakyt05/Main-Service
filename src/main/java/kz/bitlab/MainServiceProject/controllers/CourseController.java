@@ -13,7 +13,7 @@ public class CourseController {
     @Autowired
     private CourseRepository courseRepository;
     @GetMapping("/all")
-    private List<Course> getAllCourses() {
+    public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
     @PostMapping("/save")

@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Chapter {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -28,8 +29,19 @@ public class Chapter {
     private Course course;
 
     @Column(name = "created_time", nullable = false, updatable = false)
-    private LocalDateTime createdTime;
+    private LocalDateTime createdTime = LocalDateTime.now();
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createdTime = LocalDateTime.now();
+        updatedTime = createdTime;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedTime = LocalDateTime.now();
+    }
 }

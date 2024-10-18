@@ -22,8 +22,8 @@ public class Course {
     private String description;
 
     @CreationTimestamp
-    private LocalDateTime createdTime;
+    private LocalDateTime createdTime = LocalDateTime.now();
 
     @UpdateTimestamp
-    private LocalDateTime updatedTime;
+    private LocalDateTime updatedTime = LocalDateTime.now();
 }
