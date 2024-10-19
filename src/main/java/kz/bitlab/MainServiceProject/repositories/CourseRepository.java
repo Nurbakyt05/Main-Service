@@ -8,5 +8,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    Course findAllById(Long id);
 }

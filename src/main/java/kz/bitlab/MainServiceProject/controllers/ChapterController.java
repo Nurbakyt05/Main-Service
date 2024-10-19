@@ -1,7 +1,7 @@
 package kz.bitlab.MainServiceProject.controllers;
 
-import kz.bitlab.MainServiceProject.entities.Chapter;
-import kz.bitlab.MainServiceProject.repositories.ChapterRepository;
+import kz.bitlab.MainServiceProject.Service.ChapterService;
+import kz.bitlab.MainServiceProject.dto.ChapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,42 +11,43 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/chapter")
 public class ChapterController {
+
     @Autowired
-    private ChapterRepository chapterRepository;
+    private ChapterService chapterService;
 
     @GetMapping("/all")
-    public List<Chapter> getAllChapters() {
-        return chapterRepository.findAll();
+    public List<ChapterDto> getAllChapters() {
+        return chapterService.getAllChapters();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Chapter> getChapterById(@PathVariable Long id) {
-        return chapterRepository.findById(id)
+    public ResponseEntity<ChapterDto> getChapterById(@PathVariable Long id) {
+        return chapterService.getChapterById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Chapter> saveChapter(@RequestBody Chapter chapter) {
-        Chapter savedChapter = chapterRepository.save(chapter);
+    public ResponseEntity<ChapterDto> saveChapter(@RequestBody ChapterDto chapterDto) {
+        ChapterDto savedChapter = chapterService.createChapter(chapterDto);
         return ResponseEntity.ok(savedChapter);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Chapter> updateChapter(@RequestBody Chapter chapter) {
-        if (!chapterRepository.existsById(chapter.getId())) {
+    public ResponseEntity<ChapterDto> updateChapter(@RequestBody ChapterDto chapterDto) {
+        if (!chapterService.existsById(chapterDto.getId())) {
             return ResponseEntity.notFound().build(); // Возвращаем 404, если глава не найдена
         }
-        Chapter updatedChapter = chapterRepository.save(chapter);
+        ChapterDto updatedChapter = chapterService.updateChapter(chapterDto);
         return ResponseEntity.ok(updatedChapter);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteChapter(@PathVariable Long id) {
-        if (!chapterRepository.existsById(id)) {
+        if (!chapterService.existsById(id)) {
             return ResponseEntity.notFound().build(); // Возвращаем 404, если глава не найдена
         }
-        chapterRepository.deleteById(id);
+        chapterService.deleteChapter(id);
         return ResponseEntity.ok().build();
     }
 }

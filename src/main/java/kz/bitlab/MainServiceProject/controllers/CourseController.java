@@ -1,7 +1,6 @@
 package kz.bitlab.MainServiceProject.controllers;
-
-import kz.bitlab.MainServiceProject.entities.Course;
-import kz.bitlab.MainServiceProject.repositories.CourseRepository;
+import kz.bitlab.MainServiceProject.Service.CourseService;
+import kz.bitlab.MainServiceProject.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,41 +11,34 @@ import java.util.List;
 @RequestMapping(value = "/course")
 public class CourseController {
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
 
     @GetMapping("/all")
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public List<CourseDto> getAllCourses() {
+        return courseService.getAllCourses();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
-        return courseRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CourseDto> getCourseById(@PathVariable Long id) {
+        CourseDto courseDto = courseService.getCourseById(id);
+        return courseDto != null ? ResponseEntity.ok(courseDto) : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Course> saveCourse(@RequestBody Course course) {
-        Course savedCourse = courseRepository.save(course);
-        return ResponseEntity.ok(savedCourse);
+    public ResponseEntity<CourseDto> saveCourse(@RequestBody CourseDto courseDto) {
+        CourseDto savedCourseDto = courseService.createCourse(courseDto);
+        return ResponseEntity.ok(savedCourseDto);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Course> updateCourse(@RequestBody Course course) {
-        if (!courseRepository.existsById(course.getId())) {
-            return ResponseEntity.notFound().build(); // Возвращаем 404, если курс не найден
-        }
-        Course updatedCourse = courseRepository.save(course);
-        return ResponseEntity.ok(updatedCourse);
+    public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto) {
+        CourseDto updatedCourseDto = courseService.updateCourse(courseDto);
+        return updatedCourseDto != null ? ResponseEntity.ok(updatedCourseDto) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        if (!courseRepository.existsById(id)) {
-            return ResponseEntity.notFound().build(); // Возвращаем 404, если курс не найден
-        }
-        courseRepository.deleteById(id);
+        courseService.deleteCourse(id);
         return ResponseEntity.ok().build();
     }
 }
