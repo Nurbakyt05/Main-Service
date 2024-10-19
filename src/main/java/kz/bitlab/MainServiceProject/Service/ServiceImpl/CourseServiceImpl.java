@@ -1,4 +1,4 @@
-package kz.bitlab.MainServiceProject.Service.impl;
+package kz.bitlab.MainServiceProject.Service.ServiceImpl;
 
 import kz.bitlab.MainServiceProject.Service.CourseService;
 import kz.bitlab.MainServiceProject.dto.CourseDto;
