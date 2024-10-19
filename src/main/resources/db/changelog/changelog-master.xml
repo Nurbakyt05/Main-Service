@@ -5,5 +5,61 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- Пустая миграция -->
+    <!-- Changeset для создания таблицы Course -->
+    <changeSet id="1" author="nurbakyt">
+        <createTable tableName="course">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changeset для создания таблицы Chapter -->
+    <changeSet id="2" author="nurbakyt">
+        <createTable tableName="chapter">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changeset для создания таблицы Lesson -->
+    <changeSet id="3" author="nurbakyt">
+        <createTable tableName="lesson">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="chapter_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changeset для вставки данных в таблицу Course -->
+    <changeSet id="4" author="nurbakyt">
+        <insert tableName="course">
+            <column name="name" value="Java Basics"/>
+            <column name="description" value="Introduction to Java programming."/>
+        </insert>
+        <insert tableName="course">
+            <column name="name" value="Advanced Java"/>
+            <column name="description" value="In-depth Java course for experienced developers."/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
