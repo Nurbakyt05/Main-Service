@@ -9,45 +9,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/chapter")
+@RequestMapping("/chapters")
 public class ChapterController {
-
     @Autowired
     private ChapterService chapterService;
 
     @GetMapping("/all")
-    public List<ChapterDto> getAllChapters() {
-        return chapterService.getAllChapters();
+    public ResponseEntity<List<ChapterDto>> getAllChapters() {
+        List<ChapterDto> chapters = chapterService.getAllChapters();
+        return ResponseEntity.ok(chapters);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ChapterDto> getChapterById(@PathVariable Long id) {
-        return chapterService.getChapterById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        ChapterDto chapter = chapterService.getChapterById(id);
+        return ResponseEntity.ok(chapter);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<ChapterDto> saveChapter(@RequestBody ChapterDto chapterDto) {
-        ChapterDto savedChapter = chapterService.createChapter(chapterDto);
-        return ResponseEntity.ok(savedChapter);
+    @PostMapping
+    public ResponseEntity<ChapterDto> createChapter(@RequestBody ChapterDto chapterDto) {
+        ChapterDto createdChapter = chapterService.createChapter(chapterDto);
+        return ResponseEntity.status(201).body(createdChapter);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ChapterDto> updateChapter(@RequestBody ChapterDto chapterDto) {
-        if (!chapterService.existsById(chapterDto.getId())) {
-            return ResponseEntity.notFound().build(); // Возвращаем 404, если глава не найдена
-        }
         ChapterDto updatedChapter = chapterService.updateChapter(chapterDto);
         return ResponseEntity.ok(updatedChapter);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteChapter(@PathVariable Long id) {
-        if (!chapterService.existsById(id)) {
-            return ResponseEntity.notFound().build(); // Возвращаем 404, если глава не найдена
-        }
         chapterService.deleteChapter(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

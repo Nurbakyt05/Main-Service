@@ -3,7 +3,6 @@ package kz.bitlab.MainServiceProject.mapper;
 import kz.bitlab.MainServiceProject.dto.CourseDto;
 import kz.bitlab.MainServiceProject.entities.Course;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -14,7 +13,4 @@ public interface CourseMapper {
 
     List<CourseDto> coursesToCourseDtos(List<Course> courses);
     List<Course> courseDtosToCourses(List<CourseDto> courseDtos);
-
-    @Mapping(target = "chapters", source = "course.chapters")
-    CourseDto courseToCourseDtoWithChapters(Course course);
 }

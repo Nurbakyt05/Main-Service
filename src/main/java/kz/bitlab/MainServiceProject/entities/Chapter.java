@@ -3,6 +3,8 @@ package kz.bitlab.MainServiceProject.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table(name = "chapters")
 @AllArgsConstructor
@@ -10,12 +12,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Chapter {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -24,24 +25,17 @@ public class Chapter {
     @Column(name = "order_index", nullable = false)
     private int order;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    @ManyToMany
+    @JoinTable(
+            name = "chapter_lesson",
+            joinColumns = @JoinColumn(name = "chapter_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_id")
+    )
+    private List<Lesson> lessons; // Связь с уроками через @ManyToMany
 
     @Column(name = "created_time", nullable = false, updatable = false)
     private LocalDateTime createdTime = LocalDateTime.now();
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
-
-    @PrePersist
-    protected void onCreate() {
-        createdTime = LocalDateTime.now();
-        updatedTime = createdTime;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedTime = LocalDateTime.now();
-    }
 }

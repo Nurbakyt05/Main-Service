@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -17,7 +16,6 @@ public class LessonDto {
     private String description;
     private String content;
     private int order;
-    private Long chapterId;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
 }

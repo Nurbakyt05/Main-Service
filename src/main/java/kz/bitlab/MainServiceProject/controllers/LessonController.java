@@ -9,43 +9,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/lesson")
+@RequestMapping("/lessons")
 public class LessonController {
     @Autowired
     private LessonService lessonService;
 
     @GetMapping("/all")
-    public List<LessonDto> getAllLessons() {
-        return lessonService.getAllLessons();
+    public ResponseEntity<List<LessonDto>> getAllLessons() {
+        List<LessonDto> lessons = lessonService.getAllLessons();
+        return ResponseEntity.ok(lessons);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LessonDto> getLessonById(@PathVariable Long id) {
-        LessonDto lessonDto = lessonService.getLessonById(id);
-        return lessonDto != null ? ResponseEntity.ok(lessonDto) : ResponseEntity.notFound().build();
+        LessonDto lesson = lessonService.getLessonById(id);
+        return ResponseEntity.ok(lesson);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<LessonDto> saveLesson(@RequestBody LessonDto lessonDto) {
-        LessonDto savedLessonDto = lessonService.createLesson(lessonDto);
-        return ResponseEntity.ok(savedLessonDto);
+    @PostMapping
+    public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
+        LessonDto createdLesson = lessonService.createLesson(lessonDto);
+        return ResponseEntity.status(201).body(createdLesson);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<LessonDto> updateLesson(@RequestBody LessonDto lessonDto) {
-        LessonDto updatedLessonDto = lessonService.updateLesson(lessonDto);
-        return updatedLessonDto != null ? ResponseEntity.ok(updatedLessonDto) : ResponseEntity.notFound().build();
+        LessonDto updatedLesson = lessonService.updateLesson(lessonDto);
+        return ResponseEntity.ok(updatedLesson);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
         lessonService.deleteLesson(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/chapters/{chapterId}/lessons")
-    public ResponseEntity<List<LessonDto>> getLessonsByChapterId(@PathVariable Long chapterId) {
-        List<LessonDto> lessons = lessonService.getLessonsByChapterId(chapterId);
-        return ResponseEntity.ok(lessons);
+        return ResponseEntity.noContent().build();
     }
 }
