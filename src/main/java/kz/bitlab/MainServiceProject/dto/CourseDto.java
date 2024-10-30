@@ -1,16 +1,13 @@
 package kz.bitlab.MainServiceProject.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
+@ToString // temporary
 public class CourseDto {
     private Long id;
     private String name;

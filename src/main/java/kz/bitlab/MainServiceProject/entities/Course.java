@@ -3,7 +3,6 @@ package kz.bitlab.MainServiceProject.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "courses")
@@ -11,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString // temporary
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,4 @@ public class Course {
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
-
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<Chapter> chapters; // Связь с главами
 }

@@ -1,5 +1,6 @@
 package kz.bitlab.MainServiceProject.Service.ServiceImpl;
 
+import jakarta.persistence.EntityNotFoundException;
 import kz.bitlab.MainServiceProject.Service.CourseService;
 import kz.bitlab.MainServiceProject.dto.CourseDto;
 import kz.bitlab.MainServiceProject.entities.Course;
@@ -26,24 +27,40 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto getCourseById(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         return courseMapper.courseToCourseDto(course);
     }
 
     @Override
     public CourseDto createCourse(CourseDto courseDto) {
         Course course = courseMapper.courseDtoToCourse(courseDto);
-        return courseMapper.courseToCourseDto(courseRepository.save(course));
+        Course savedCourse = courseRepository.save(course);
+        return courseMapper.courseToCourseDto(savedCourse);
     }
 
     @Override
     public CourseDto updateCourse(CourseDto courseDto) {
-        Course course = courseMapper.courseDtoToCourse(courseDto);
-        return courseMapper.courseToCourseDto(courseRepository.save(course));
+        Course course = courseRepository.findById(courseDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        course.setName(courseDto.getName());
+        course.setDescription(courseDto.getDescription());
+        Course updatedCourse = courseRepository.save(course);
+        return courseMapper.courseToCourseDto(updatedCourse);
     }
 
     @Override
     public void deleteCourse(Long id) {
+        if (!courseRepository.existsById(id)) {
+            throw new EntityNotFoundException("Course not found");
+        }
         courseRepository.deleteById(id);
+    }
+
+    @Override
+    public CourseDto getCourseByName(String name) {
+        Course course = courseRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Course with name " + name + " not found"));
+        return courseMapper.courseToCourseDto(course);
     }
 }

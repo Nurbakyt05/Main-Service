@@ -1,9 +1,12 @@
 package kz.bitlab.MainServiceProject.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import kz.bitlab.MainServiceProject.Service.LessonService;
 import kz.bitlab.MainServiceProject.dto.LessonDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/lessons")
 public class LessonController {
+
     @Autowired
     private LessonService lessonService;
 
@@ -22,25 +26,50 @@ public class LessonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LessonDto> getLessonById(@PathVariable Long id) {
-        LessonDto lesson = lessonService.getLessonById(id);
-        return ResponseEntity.ok(lesson);
+        try {
+            LessonDto lesson = lessonService.getLessonById(id);
+            return ResponseEntity.ok(lesson);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
+    @PostMapping("/save")
+    public ResponseEntity<LessonDto> createLesson(@Validated @RequestBody LessonDto lessonDto) {
         LessonDto createdLesson = lessonService.createLesson(lessonDto);
-        return ResponseEntity.status(201).body(createdLesson);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdLesson);
     }
 
-    @PutMapping
-    public ResponseEntity<LessonDto> updateLesson(@RequestBody LessonDto lessonDto) {
-        LessonDto updatedLesson = lessonService.updateLesson(lessonDto);
-        return ResponseEntity.ok(updatedLesson);
+    @PutMapping("/{id}")
+    public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Validated @RequestBody LessonDto lessonDto) {
+        try {
+            LessonDto updatedLesson = lessonService.updateLesson(lessonDto);
+            return ResponseEntity.ok(updatedLesson);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
-        lessonService.deleteLesson(id);
-        return ResponseEntity.noContent().build();
+        try {
+            lessonService.deleteLesson(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/chapter/{chapterId}")
+    public ResponseEntity<List<LessonDto>> getLessonsByChapterId(@PathVariable Long chapterId) {
+        List<LessonDto> lessons = lessonService.getLessonsByChapterId(chapterId);
+        return ResponseEntity.ok(lessons);
+    }
+
+    @GetMapping("/chapter/{chapterId}/ordered")
+    public ResponseEntity<List<LessonDto>> getLessonsByChapterIdOrdered(@PathVariable Long chapterId) {
+        List<LessonDto> orderedLessons = lessonService.getLessonsByChapterIdOrdered(chapterId);
+        return ResponseEntity.ok(orderedLessons);
     }
 }
+
