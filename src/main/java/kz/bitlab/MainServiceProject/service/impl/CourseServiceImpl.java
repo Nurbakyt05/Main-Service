@@ -1,15 +1,16 @@
-package kz.bitlab.MainServiceProject.Service.ServiceImpl;
+package kz.bitlab.MainServiceProject.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import kz.bitlab.MainServiceProject.Service.CourseService;
+import kz.bitlab.MainServiceProject.entity.CourseEntity;
+import kz.bitlab.MainServiceProject.service.CourseService;
 import kz.bitlab.MainServiceProject.dto.CourseDto;
-import kz.bitlab.MainServiceProject.entities.Course;
 import kz.bitlab.MainServiceProject.mapper.CourseMapper;
 import kz.bitlab.MainServiceProject.repositories.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -21,32 +22,31 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDto> getAllCourses() {
-        List<Course> courses = courseRepository.findAll();
-        return courseMapper.coursesToCourseDtos(courses);
+        return courseRepository.findAll()
+                .stream()
+                .map(entity -> courseMapper.entityToDto(entity))
+                .collect(Collectors.toList());
     }
 
     @Override
     public CourseDto getCourseById(Long id) {
-        Course course = courseRepository.findById(id)
+        CourseEntity courseEntity = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        return courseMapper.courseToCourseDto(course);
+        return courseMapper.entityToDto(courseEntity);
     }
 
     @Override
     public CourseDto createCourse(CourseDto courseDto) {
-        Course course = courseMapper.courseDtoToCourse(courseDto);
-        Course savedCourse = courseRepository.save(course);
-        return courseMapper.courseToCourseDto(savedCourse);
+        CourseEntity courseEntity = courseMapper.dtoToEntity(courseDto);
+        return courseMapper.entityToDto(courseRepository.save(courseEntity));
     }
 
     @Override
     public CourseDto updateCourse(CourseDto courseDto) {
-        Course course = courseRepository.findById(courseDto.getId())
+        CourseEntity courseEntity = courseRepository.findById(courseDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        course.setName(courseDto.getName());
-        course.setDescription(courseDto.getDescription());
-        Course updatedCourse = courseRepository.save(course);
-        return courseMapper.courseToCourseDto(updatedCourse);
+        courseMapper.dtoToEntity(courseDto, courseEntity);
+        return courseMapper.entityToDto(courseRepository.save(courseEntity));
     }
 
     @Override
@@ -59,8 +59,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto getCourseByName(String name) {
-        Course course = courseRepository.findByName(name)
+        CourseEntity courseEntity = courseRepository.findByName(name)
                 .orElseThrow(() -> new EntityNotFoundException("Course with name " + name + " not found"));
-        return courseMapper.courseToCourseDto(course);
+        return courseMapper.entityToDto(courseEntity);
     }
 }

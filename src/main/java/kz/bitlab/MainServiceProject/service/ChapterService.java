@@ -1,4 +1,4 @@
-package kz.bitlab.MainServiceProject.Service;
+package kz.bitlab.MainServiceProject.service;
 
 import kz.bitlab.MainServiceProject.dto.ChapterDto;
 import java.util.List;
@@ -11,5 +11,4 @@ public interface ChapterService {
     void deleteChapter(Long id);
 
     List<ChapterDto> getChaptersByCourseId(Long courseId); // Главы по ID курса
-    List<ChapterDto> getChaptersByCourseIdOrdered(Long courseId); // Главы по ID курса, отсортированные по порядку
 }

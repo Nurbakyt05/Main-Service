@@ -3,10 +3,10 @@ package kz.bitlab.MainServiceProject.dto;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
-@ToString // temporary
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChapterDto {
     private Long id;
     private String name;

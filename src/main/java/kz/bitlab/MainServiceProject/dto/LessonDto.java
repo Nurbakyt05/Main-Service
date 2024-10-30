@@ -3,10 +3,9 @@ package kz.bitlab.MainServiceProject.dto;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-@ToString // temporary
+@NoArgsConstructor
+@AllArgsConstructor
 public class LessonDto {
     private Long id;
     private String name;
@@ -17,3 +16,5 @@ public class LessonDto {
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
 }
+
+

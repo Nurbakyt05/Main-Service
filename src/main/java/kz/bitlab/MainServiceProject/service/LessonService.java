@@ -1,4 +1,4 @@
-package kz.bitlab.MainServiceProject.Service;
+package kz.bitlab.MainServiceProject.service;
 
 import kz.bitlab.MainServiceProject.dto.LessonDto;
 import java.util.List;

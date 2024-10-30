@@ -1,12 +1,11 @@
-package kz.bitlab.MainServiceProject.controllers;
+package kz.bitlab.MainServiceProject.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import kz.bitlab.MainServiceProject.Service.LessonService;
+import kz.bitlab.MainServiceProject.service.LessonService;
 import kz.bitlab.MainServiceProject.dto.LessonDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,13 +34,13 @@ public class LessonController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<LessonDto> createLesson(@Validated @RequestBody LessonDto lessonDto) {
+    public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
         LessonDto createdLesson = lessonService.createLesson(lessonDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLesson);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @Validated @RequestBody LessonDto lessonDto) {
+    public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @RequestBody LessonDto lessonDto) {
         try {
             LessonDto updatedLesson = lessonService.updateLesson(lessonDto);
             return ResponseEntity.ok(updatedLesson);

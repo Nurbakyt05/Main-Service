@@ -1,7 +1,7 @@
-package kz.bitlab.MainServiceProject.controllers;
+package kz.bitlab.MainServiceProject.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import kz.bitlab.MainServiceProject.Service.ChapterService;
+import kz.bitlab.MainServiceProject.service.ChapterService;
 import kz.bitlab.MainServiceProject.dto.ChapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chapters")
+@RequestMapping("/chapter")
 public class ChapterController {
 
     @Autowired
@@ -35,9 +35,9 @@ public class ChapterController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ChapterDto> createChapter(@Validated @RequestBody ChapterDto chapterDto) {
+    public ResponseEntity<ChapterDto> createChapter(@RequestBody ChapterDto chapterDto) {
         ChapterDto createdChapter = chapterService.createChapter(chapterDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdChapter);
+        return ResponseEntity.status(HttpStatus.OK).body(createdChapter);
     }
 
     @PutMapping("/{id}")
@@ -66,9 +66,4 @@ public class ChapterController {
         return ResponseEntity.ok(chapters);
     }
 
-    @GetMapping("/course/{courseId}/ordered")
-    public ResponseEntity<List<ChapterDto>> getChaptersByCourseIdOrdered(@PathVariable Long courseId) {
-        List<ChapterDto> orderedChapters = chapterService.getChaptersByCourseIdOrdered(courseId);
-        return ResponseEntity.ok(orderedChapters);
-    }
 }

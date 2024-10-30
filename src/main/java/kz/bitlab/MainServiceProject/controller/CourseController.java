@@ -1,7 +1,7 @@
-package kz.bitlab.MainServiceProject.controllers;
+package kz.bitlab.MainServiceProject.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import kz.bitlab.MainServiceProject.Service.CourseService;
+import kz.bitlab.MainServiceProject.service.CourseService;
 import kz.bitlab.MainServiceProject.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class CourseController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<CourseDto> createCourse(@Validated @RequestBody CourseDto courseDto) {
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
         CourseDto createdCourse = courseService.createCourse(courseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
     }

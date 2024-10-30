@@ -1,10 +1,10 @@
-package kz.bitlab.MainServiceProject.Service.ServiceImpl;
+package kz.bitlab.MainServiceProject.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import kz.bitlab.MainServiceProject.Service.LessonService;
+import kz.bitlab.MainServiceProject.entity.ChapterEntity;
+import kz.bitlab.MainServiceProject.entity.LessonEntity;
+import kz.bitlab.MainServiceProject.service.LessonService;
 import kz.bitlab.MainServiceProject.dto.LessonDto;
-import kz.bitlab.MainServiceProject.entities.Chapter;
-import kz.bitlab.MainServiceProject.entities.Lesson;
 import kz.bitlab.MainServiceProject.mapper.LessonMapper;
 import kz.bitlab.MainServiceProject.repositories.ChapterRepository;
 import kz.bitlab.MainServiceProject.repositories.LessonRepository;
@@ -26,44 +26,44 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDto> getAllLessons() {
-        List<Lesson> lessons = lessonRepository.findAll(Sort.by(Sort.Order.asc("order"))); // Сортировка по полю order
-        return lessonMapper.lessonsToLessonDtos(lessons);
+        List<LessonEntity> lessonEntities = lessonRepository.findAll(Sort.by(Sort.Order.asc("order"))); // Сортировка по полю order
+        return lessonMapper.lessonsToLessonDtos(lessonEntities);
     }
 
     @Override
     public LessonDto getLessonById(Long id) {
-        Lesson lesson = lessonRepository.findById(id)
+        LessonEntity lessonEntity = lessonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
-        return lessonMapper.toDto(lesson);
+        return lessonMapper.toDto(lessonEntity);
     }
 
     @Override
     public LessonDto createLesson(LessonDto lessonDto) {
-        Lesson lesson = lessonMapper.toEntity(lessonDto);
-        lesson.setOrder(lessonDto.getOrder()); // Устанавливаем порядок
-        Lesson savedLesson = lessonRepository.save(lesson);
-        return lessonMapper.toDto(savedLesson);
+        LessonEntity lessonEntity = lessonMapper.toEntity(lessonDto);
+        lessonEntity.setOrder(lessonDto.getOrder()); // Устанавливаем порядок
+        LessonEntity savedLessonEntity = lessonRepository.save(lessonEntity);
+        return lessonMapper.toDto(savedLessonEntity);
     }
 
     @Override
     public LessonDto updateLesson(LessonDto lessonDto) {
-        Lesson lesson = lessonRepository.findById(lessonDto.getId())
+        LessonEntity lessonEntity = lessonRepository.findById(lessonDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
 
         // Обновляем поля урока
-        lesson.setName(lessonDto.getName());  // Используем name вместо title
-        lesson.setContent(lessonDto.getContent());
-        lesson.setOrder(lessonDto.getOrder());
+        lessonEntity.setName(lessonDto.getName());  // Используем name вместо title
+        lessonEntity.setContent(lessonDto.getContent());
+        lessonEntity.setOrder(lessonDto.getOrder());
 
         // Устанавливаем главу, если необходимо
         if (lessonDto.getChapter() != null && lessonDto.getChapter().getId() != null) {
-            Chapter chapter = chapterRepository.findById(lessonDto.getChapter().getId())
+            ChapterEntity chapterEntity = chapterRepository.findById(lessonDto.getChapter().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Chapter not found"));
-            lesson.setChapter(chapter);
+            lessonEntity.setChapterEntity(chapterEntity);
         }
 
-        Lesson updatedLesson = lessonRepository.save(lesson);
-        return lessonMapper.toDto(updatedLesson);
+        LessonEntity updatedLessonEntity = lessonRepository.save(lessonEntity);
+        return lessonMapper.toDto(updatedLessonEntity);
     }
 
     @Override
@@ -76,13 +76,13 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDto> getLessonsByChapterId(Long chapterId) {
-        List<Lesson> lessons = lessonRepository.findByChapterId(chapterId, Sort.by(Sort.Order.asc("order")));
-        return lessonMapper.lessonsToLessonDtos(lessons);
+//        List<LessonEntity> lessonEntities = lessonRepository.findByChapterId(chapterId, Sort.by(Sort.Order.asc("order")));
+        return lessonMapper.lessonsToLessonDtos(null);
     }
 
     @Override
     public List<LessonDto> getLessonsByChapterIdOrdered(Long chapterId) {
-        List<Lesson> lessons = lessonRepository.findByChapterId(chapterId, Sort.by(Sort.Order.asc("order")));
-        return lessonMapper.lessonsToLessonDtos(lessons);
+//        List<LessonEntity> lessonEntities = lessonRepository.findByChapterId(chapterId, Sort.by(Sort.Order.asc("order")));
+        return lessonMapper.lessonsToLessonDtos(null);
     }
 }
