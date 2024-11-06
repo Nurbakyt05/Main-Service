@@ -6,13 +6,12 @@ import kz.bitlab.MainServiceProject.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("/course")
 public class CourseController {
 
     @Autowired
@@ -40,15 +39,16 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @Validated @RequestBody CourseDto courseDto) {
+    @PutMapping("/courses/{id}")
+    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
         try {
-            CourseDto updatedCourse = courseService.updateCourse(courseDto);
+            CourseDto updatedCourse = courseService.updateCourse(id, courseDto);
             return ResponseEntity.ok(updatedCourse);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
@@ -57,17 +57,6 @@ public class CourseController {
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    // Новый метод для поиска курса по имени
-    @GetMapping("/name")
-    public ResponseEntity<CourseDto> getCourseByName(@RequestParam String name) {
-        try {
-            CourseDto course = courseService.getCourseByName(name);
-            return ResponseEntity.ok(course);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

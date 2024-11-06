@@ -40,10 +40,10 @@ public class ChapterController {
         return ResponseEntity.status(HttpStatus.OK).body(createdChapter);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ChapterDto> updateChapter(@PathVariable Long id, @Validated @RequestBody ChapterDto chapterDto) {
         try {
-            ChapterDto updatedChapter = chapterService.updateChapter(chapterDto);
+            ChapterDto updatedChapter = chapterService.updateChapter(id,chapterDto);
             return ResponseEntity.ok(updatedChapter);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -65,5 +65,4 @@ public class ChapterController {
         List<ChapterDto> chapters = chapterService.getChaptersByCourseId(courseId);
         return ResponseEntity.ok(chapters);
     }
-
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ChapterServiceImpl implements ChapterService {
@@ -28,8 +29,8 @@ public class ChapterServiceImpl implements ChapterService {
     public List<ChapterDto> getAllChapters() {
         List<ChapterEntity> chapterEntities = chapterRepository.findAll();
         return chapterEntities.stream()
-                .map(chapter -> chapterMapper.entityToDto(chapter))
-                .toList();
+                .map(chapterMapper::entityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -53,14 +54,17 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public ChapterDto updateChapter(ChapterDto chapterDto) {
-        ChapterEntity chapterEntity = chapterRepository.findById(chapterDto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Chapter not found"));
-        chapterEntity.setName(chapterDto.getName());
-        chapterEntity.setDescription(chapterDto.getDescription());
-        chapterEntity.setOrder(chapterDto.getOrder());
-        ChapterEntity updatedChapterEntity = chapterRepository.save(chapterEntity);
-        return chapterMapper.entityToDto(updatedChapterEntity);
+    public ChapterDto updateChapter(Long id, ChapterDto chapterDto) {
+        if (Objects.isNull(chapterDto.getCourse()) || Objects.isNull(chapterDto.getCourse().getId())) {
+            throw new IllegalArgumentException("Course cannot be null");
+        }
+
+        ChapterEntity existingChapterEntity = chapterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Chapter not found with ID: " + id));
+
+        chapterMapper.dtoToEntity(chapterDto, existingChapterEntity);
+
+        return chapterMapper.entityToDto(chapterRepository.save(existingChapterEntity));
     }
 
     @Override

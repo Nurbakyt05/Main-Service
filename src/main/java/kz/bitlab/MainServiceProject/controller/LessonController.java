@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lessons")
+@RequestMapping("/lesson")
 public class LessonController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class LessonController {
     @PutMapping("/{id}")
     public ResponseEntity<LessonDto> updateLesson(@PathVariable Long id, @RequestBody LessonDto lessonDto) {
         try {
-            LessonDto updatedLesson = lessonService.updateLesson(lessonDto);
+            LessonDto updatedLesson = lessonService.updateLesson(id,lessonDto);
             return ResponseEntity.ok(updatedLesson);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

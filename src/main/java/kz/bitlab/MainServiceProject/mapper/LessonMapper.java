@@ -3,15 +3,20 @@ package kz.bitlab.MainServiceProject.mapper;
 import kz.bitlab.MainServiceProject.dto.LessonDto;
 import kz.bitlab.MainServiceProject.entity.LessonEntity;
 import org.mapstruct.Mapper;
-
-import java.util.List;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface LessonMapper {
-    LessonDto toDto(LessonEntity lessonEntity);
+    @Mapping(source = "chapterEntity",target = "chapter")
+    LessonDto entityToDto(LessonEntity lessonEntity);
 
-    LessonEntity toEntity(LessonDto lessonDto);
+    LessonEntity dtoToEntity(LessonDto lessonDto);
 
-    List<LessonDto> lessonsToLessonDtos(List<LessonEntity> lessonEntities);
-    List<LessonEntity> lessonDtosToLessons(List<LessonDto> lessonDtos);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdTime", ignore = true)
+    @Mapping(target = "updatedTime", ignore = true)
+    void dtoToEntity(LessonDto dto,
+                     @MappingTarget LessonEntity lessonEntity);
+
 }

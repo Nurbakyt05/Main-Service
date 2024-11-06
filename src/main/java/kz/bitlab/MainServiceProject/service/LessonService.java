@@ -7,7 +7,7 @@ public interface LessonService {
     List<LessonDto> getAllLessons();
     LessonDto getLessonById(Long id);
     LessonDto createLesson(LessonDto lessonDto);
-    LessonDto updateLesson(LessonDto lessonDto);
+    LessonDto updateLesson(Long id,LessonDto lessonDto);
     void deleteLesson(Long id);
 
     List<LessonDto> getLessonsByChapterId(Long chapterId); // Уроки по ID главы

@@ -7,7 +7,7 @@ public interface CourseService {
     List<CourseDto> getAllCourses();
     CourseDto getCourseById(Long id);
     CourseDto createCourse(CourseDto courseDto);
-    CourseDto updateCourse(CourseDto courseDto);
+    CourseDto updateCourse(Long id,CourseDto courseDto);
     void deleteCourse(Long id);
 
     CourseDto getCourseByName(String name); // Новый метод для поиска курса по имени

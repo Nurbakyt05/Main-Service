@@ -1,12 +1,13 @@
 package kz.bitlab.MainServiceProject.dto;
 
+import kz.bitlab.MainServiceProject.entity.LessonEntity;
 import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LessonDto {
+public class LessonDto extends LessonEntity {
     private Long id;
     private String name;
     private String description;
