@@ -1,10 +1,12 @@
 package kz.bitlab.MainServiceProject.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -36,10 +38,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    // Обработка любых других исключений
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
-        String errorMessage = "Произошла ошибка на сервере";
+        String errorMessage = "Произошла ошибка на сервере: " + ex.getMessage();
+        // Если нужно, можно добавить стек трейс для логирования (не передавать его клиенту)
+        log.error("Ошибка на сервере", ex);
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

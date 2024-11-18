@@ -1,4 +1,12 @@
 services:
+  main-service:
+    image: main-service-project-iso
+    container_name: main-service-project-container
+    ports:
+      - "8888:8080"
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:latest
     environment:

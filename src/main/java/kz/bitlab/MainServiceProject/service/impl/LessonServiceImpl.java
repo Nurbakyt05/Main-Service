@@ -1,9 +1,9 @@
 package kz.bitlab.MainServiceProject.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
+import kz.bitlab.MainServiceProject.exception.ChapterNotFoundException;
+import kz.bitlab.MainServiceProject.exception.LessonNotFoundException;
 import kz.bitlab.MainServiceProject.entity.ChapterEntity;
 import kz.bitlab.MainServiceProject.entity.LessonEntity;
-import kz.bitlab.MainServiceProject.exception.LessonNotFoundException;
 import kz.bitlab.MainServiceProject.service.LessonService;
 import kz.bitlab.MainServiceProject.dto.LessonDto;
 import kz.bitlab.MainServiceProject.mapper.LessonMapper;
@@ -30,7 +30,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDto> getAllLessons() {
-        log.info("Fetching all lessons from the database");  // Логируем начало получения списка уроков
+        log.info("Success GetAllLessons");  // Логируем начало получения списка уроков
 
         try {
             // Получаем все уроки из базы данных
@@ -74,93 +74,83 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public LessonDto createLesson(LessonDto lesson) {
-        log.info("Attempting to create a new lesson");  // Логируем начало процесса создания нового урока
+    public LessonDto createLesson(LessonDto lessonDto) {
+        // Логируем попытку создания урока
+        log.info("Attempting to create a new lesson: {}", lessonDto);
 
-        // Проверка, что информация о главе не пустая
-        if (Objects.isNull(lesson.getChapter()) || Objects.isNull(lesson.getChapter().getId())) {
-            log.error("Chapter information is missing, cannot create lesson");  // Логируем ошибку
-            throw new EntityNotFoundException("Chapter cannot be null");
+        // Проверка наличия информации о главе в DTO
+        if (lessonDto.getChapter() == null || lessonDto.getChapter().getId() == null) {
+            log.error("Chapter information is missing in the lesson DTO");
+            throw new LessonNotFoundException("Chapter information is required to create a lesson");
         }
 
-        try {
-            // Ищем главу по ID
-            ChapterEntity chapterEntity = chapterRepository.findById(lesson.getChapter().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Chapter not found with ID: " + lesson.getChapter().getId()));
+        // Проверяем существование главы в базе данных
+        ChapterEntity chapterEntity = chapterRepository.findById(lessonDto.getChapter().getId())
+                .orElseThrow(() -> {
+                    log.error("Chapter with ID {} not found", lessonDto.getChapter().getId());
+                    return new LessonNotFoundException("Chapter not found with ID: " + lessonDto.getChapter().getId());
+                });
 
-            log.debug("Found chapter for lesson: {}", chapterEntity);  // Логируем данные главы для отладки
+        log.debug("Found chapter with ID {} for lesson creation", chapterEntity.getId());
 
-            // Преобразуем DTO урока в сущность и связываем с найденной главой
-            LessonEntity lessonEntity = lessonMapper.dtoToEntity(lesson);
-            lessonEntity.setChapterEntity(chapterEntity);
+        // Преобразуем DTO урока в сущность
+        LessonEntity lessonEntity = lessonMapper.dtoToEntity(lessonDto);
+        lessonEntity.setChapterEntity(chapterEntity); // Связываем урок с главой
 
-            // Сохраняем урок в базе данных
-            LessonEntity savedLessonEntity = lessonRepository.save(lessonEntity);
+        // Сохраняем урок в базе данных
+        LessonEntity savedLessonEntity = lessonRepository.save(lessonEntity);
 
-            log.info("Lesson '{}' created successfully with ID: {}", savedLessonEntity.getName(), savedLessonEntity.getId());  // Логируем успешное создание
+        log.info("Lesson '{}' created successfully with ID: {}", savedLessonEntity.getName(), savedLessonEntity.getId());
 
-            // Преобразуем сохранённый урок в DTO и возвращаем
-            return lessonMapper.entityToDto(savedLessonEntity);
-
-        } catch (EntityNotFoundException e) {
-            // Логирование на уровне ERROR (если глава не найдена)
-            log.error("Chapter with ID {} not found, cannot create lesson: {}", lesson.getChapter().getId(), e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            // Логирование на уровне ERROR (если другая ошибка при создании урока)
-            log.error("Unexpected error occurred while creating lesson: {}", e.getMessage());
-            throw new LessonNotFoundException("Lesson creation failed due to unexpected error");
-        }
+        // Преобразуем сохранённую сущность обратно в DTO и возвращаем результат
+        return lessonMapper.entityToDto(savedLessonEntity);
     }
 
     @Override
     public LessonDto updateLesson(Long id, LessonDto lessonDto) {
-        log.info("Attempting to update lesson with ID: {}", id);  // Логируем начало процесса обновления
+        log.info("Attempting to update lesson with ID: {}", id);
 
-        // Проверка на совпадение ID в URL и в объекте lessonDto
+        // Проверка на совпадение ID
         if (!id.equals(lessonDto.getId())) {
-            log.error("ID in the URL and ID in the lessonDto do not match");  // Логируем ошибку, если ID не совпадают
-            throw new IllegalArgumentException("ID in the URL and ID in the lessonDto must match");
+            log.error("ID in the URL and ID in the lessonDto do not match");
+            throw new LessonNotFoundException("ID in the URL and ID in the lessonDto must match");
         }
 
         try {
-            // Поиск существующего урока по ID
+            // Поиск урока
             LessonEntity lessonEntity = lessonRepository.findById(id)
                     .orElseThrow(() -> new LessonNotFoundException("Lesson not found with ID: " + id));
 
-            log.debug("Existing lesson data before update: {}", lessonEntity);  // Логируем данные существующего урока
+            log.debug("Existing lesson data before update: {}", lessonEntity);
 
-            // Обновление связи с главой, если она задана
+            // Обновление связанных данных
             if (lessonDto.getChapter() != null && lessonDto.getChapter().getId() != null) {
                 ChapterEntity chapterEntity = chapterRepository.findById(lessonDto.getChapter().getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Chapter not found with ID: " + lessonDto.getChapter().getId()));
+                        .orElseThrow(() -> new LessonNotFoundException("Chapter not found with ID: " + lessonDto.getChapter().getId()));
                 lessonEntity.setChapterEntity(chapterEntity);
-                log.debug("Updated chapter information for lesson with ID: {}", id);  // Логируем обновление главы
+                log.debug("Updated chapter information for lesson with ID: {}", id);
             }
 
-            // Преобразуем DTO в сущность и сохраняем обновлённый урок
+            // Маппинг DTO в сущность
             lessonMapper.dtoToEntity(lessonDto, lessonEntity);
+
+            // Сохранение сущности
             LessonEntity updatedLessonEntity = lessonRepository.save(lessonEntity);
 
-            log.info("Lesson with ID '{}' updated successfully", updatedLessonEntity.getId());  // Логируем успешное обновление
+            log.info("Lesson with ID '{}' updated successfully", updatedLessonEntity.getId());
 
-            // Преобразуем сохранённый урок в DTO и возвращаем
+            // Преобразование в DTO и возврат результата
             return lessonMapper.entityToDto(updatedLessonEntity);
 
-        } catch (LessonNotFoundException e) {
-            // Логирование на уровне ERROR (если урок не найден)
-            log.error("Lesson with ID {} not found, cannot update: {}", id, e.getMessage());
-            throw e;  // Пробрасываем исключение дальше
-        } catch (EntityNotFoundException e) {
-            // Логирование на уровне ERROR (если глава не найдена)
-            log.error("Chapter with ID {} not found, cannot update lesson: {}", lessonDto.getChapter().getId(), e.getMessage());
-            throw e;  // Пробрасываем исключение дальше
+        } catch (LessonNotFoundException | ChapterNotFoundException e) {
+            log.error("Error occurred: {}", e.getMessage());
+            throw e; // Пробрасываем исключение дальше
         } catch (Exception e) {
-            // Логирование на уровне ERROR для других ошибок
             log.error("Unexpected error occurred while updating lesson with ID {}: {}", id, e.getMessage());
-            throw new LessonNotFoundException("Lesson update failed due to unexpected error");
+            throw new RuntimeException("Lesson update failed due to unexpected error: " + e.getMessage(), e);
         }
     }
+
 
     @Override
     public void deleteLesson(Long id) {
@@ -201,7 +191,7 @@ public class LessonServiceImpl implements LessonService {
         try {
             // Ищем главу по ID
             ChapterEntity chapterEntity = chapterRepository.findById(chapterId)
-                    .orElseThrow(() -> new EntityNotFoundException("Chapter not found with ID: " + chapterId));
+                    .orElseThrow(() -> new LessonNotFoundException("Chapter not found with ID: " + chapterId));
 
             log.debug("Found chapter for lessons: {}", chapterEntity);  // Логируем данные главы для отладки
 
@@ -215,7 +205,7 @@ public class LessonServiceImpl implements LessonService {
                     .map(lessonMapper::entityToDto)
                     .collect(Collectors.toList());
 
-        } catch (EntityNotFoundException e) {
+        } catch (LessonNotFoundException e) {
             // Логирование на уровне ERROR (если глава не найдена)
             log.error("Chapter with ID {} not found, cannot fetch lessons: {}", chapterId, e.getMessage());
             throw e;  // Пробрасываем исключение дальше
@@ -234,7 +224,7 @@ public class LessonServiceImpl implements LessonService {
         try {
             // Ищем главу по ID
             ChapterEntity chapterEntity = chapterRepository.findById(chapterId)
-                    .orElseThrow(() -> new EntityNotFoundException("Chapter not found with ID: " + chapterId));
+                    .orElseThrow(() -> new LessonNotFoundException("Chapter not found with ID: " + chapterId));
 
             log.debug("Found chapter for ordered lessons: {}", chapterEntity);  // Логируем данные главы для отладки
 
@@ -248,7 +238,7 @@ public class LessonServiceImpl implements LessonService {
                     .map(lessonMapper::entityToDto)
                     .collect(Collectors.toList());
 
-        } catch (EntityNotFoundException e) {
+        } catch (LessonNotFoundException e) {
             // Логирование на уровне ERROR (если глава не найдена)
             log.error("Chapter with ID {} not found, cannot fetch ordered lessons: {}", chapterId, e.getMessage());
             throw e;  // Пробрасываем исключение дальше

@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ChapterRepository extends JpaRepository<ChapterEntity, Long> {
         List<ChapterEntity> findByCourseEntity(CourseEntity courseEntity);
+        List<ChapterEntity> findAllByCourseEntityIdOrderByOrder(Long courseId);
 }

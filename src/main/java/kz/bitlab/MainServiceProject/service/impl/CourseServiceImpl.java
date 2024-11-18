@@ -46,6 +46,7 @@ public class CourseServiceImpl implements CourseService {
             CourseEntity courseEntity = courseRepository.findById(id)
                     .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + id));
             log.debug("Course data: {}", courseEntity);
+
             return courseMapper.entityToDto(courseEntity);
         } catch (CourseNotFoundException e) {
             log.error("Course with ID {} not found: {}", id, e.getMessage());
@@ -91,20 +92,5 @@ public class CourseServiceImpl implements CourseService {
         }
         courseRepository.deleteById(id);
         log.info("Course with ID {} successfully deleted", id);
-    }
-
-    @Override
-    public CourseDto getCourseByName(String name) {
-        log.info("Attempting to retrieve course with name: {}", name);
-
-        try {
-            CourseEntity courseEntity = courseRepository.findByName(name)
-                    .orElseThrow(() -> new CourseNotFoundException("Course with name '" + name + "' not found"));
-            log.debug("Found course: {}", courseEntity);
-            return courseMapper.entityToDto(courseEntity);
-        } catch (CourseNotFoundException e) {
-            log.error("Course with name '{}' not found: {}", name, e.getMessage());
-            throw e;
-        }
     }
 }

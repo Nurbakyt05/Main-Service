@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-
-@Mapper(componentModel = "spring", uses = {ChapterMapper.class})
+@Mapper(componentModel = "spring")
 public interface CourseMapper {
+
     CourseDto entityToDto(CourseEntity courseEntity);
 
     CourseEntity dtoToEntity(CourseDto courseDto);

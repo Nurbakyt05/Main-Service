@@ -1,10 +1,12 @@
 package kz.bitlab.MainServiceProject.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.time.LocalDateTime;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChapterDto {
@@ -12,7 +14,9 @@ public class ChapterDto {
     private String name;
     private String description;
     private int order;
-    private CourseDto course; // Связь с курсом
+    private CourseDto course;
+    @JsonIgnore
     private LocalDateTime createdTime;
+    @JsonIgnore
     private LocalDateTime updatedTime;
 }
