@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   main-service:
     image: main-service-project-iso
@@ -6,6 +8,7 @@ services:
       - "8888:8080"
     depends_on:
       - postgres
+      - keycloak
 
   postgres:
     image: postgres:latest
@@ -17,6 +20,23 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.3
+    container_name: keycloak
+    command:
+      - start-dev
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/MainServiceDataBase
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=NURIK2005
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin_password
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
