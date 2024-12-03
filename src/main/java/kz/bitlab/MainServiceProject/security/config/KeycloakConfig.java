@@ -1,4 +1,4 @@
-package kz.bitlab.MainServiceProject.config;
+package kz.bitlab.MainServiceProject.security.config;
 
 
 import lombok.extern.slf4j.Slf4j;

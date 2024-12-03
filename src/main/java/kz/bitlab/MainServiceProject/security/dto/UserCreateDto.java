@@ -1,4 +1,4 @@
-package kz.bitlab.MainServiceProject.dto.keycloak;
+package kz.bitlab.MainServiceProject.security.dto;
 
 import lombok.*;
 
