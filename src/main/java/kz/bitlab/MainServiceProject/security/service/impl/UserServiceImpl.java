@@ -3,6 +3,7 @@ package kz.bitlab.MainServiceProject.security.service.impl;
 import jakarta.ws.rs.core.Response;
 import kz.bitlab.MainServiceProject.security.dto.*;
 import kz.bitlab.MainServiceProject.security.service.UserService;
+import kz.bitlab.MainServiceProject.security.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static kz.bitlab.MainServiceProject.security.util.UserUtils.getCurrentUserName;
 
@@ -73,6 +75,41 @@ public class UserServiceImpl implements UserService {
         List<UserRepresentation> searchUser = keycloak.realm(realm).users().search(user.getUsername());
         return searchUser.get(0);
     }
+
+    public UserRepresentation updateUser(UserUpdateDto user) {
+        // Получение текущего имени пользователя
+        String username = UserUtils.getCurrentUserName();
+
+        // Поиск пользователя в Keycloak
+        List<UserRepresentation> foundUsers = keycloak.realm(realm)
+                .users()
+                .search(username);
+
+        // Фильтрация по точному имени пользователя
+        Optional<UserRepresentation> users = foundUsers.stream()
+                .filter(u -> username.equalsIgnoreCase(u.getUsername()))
+                .findFirst();
+
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("User not found with username: " + username);
+        }
+
+        // Обновляем данные пользователя
+        UserRepresentation userRepresentation = users.get();
+        userRepresentation.setEmail(user.getEmail());
+        userRepresentation.setFirstName(user.getFirstName());
+        userRepresentation.setLastName(user.getLastName());
+
+        // Сохраняем обновления в Keycloak
+        keycloak.realm(realm)
+                .users()
+                .get(userRepresentation.getId())
+                .update(userRepresentation);
+
+        // Возвращаем обновленный объект UserRepresentation
+        return userRepresentation;
+    }
+
 
     @Override
     public UserRepresentation changePassword(UserChangePasswordDto userChangePasswordDto) {

@@ -20,6 +20,11 @@ public class UserController {
     public UserRepresentation createUser(@RequestBody UserCreateDto userCreateDto) {
         return userService.createUser(userCreateDto);
     }
+    @PutMapping(value = "/update")
+    public UserRepresentation updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        return userService.updateUser(userUpdateDto);
+    }
+
     @PostMapping(value = "/sign-in")
     public String signIn(@RequestBody UserSignInDto userSignInDto) {
         return userService.signIn(userSignInDto);
