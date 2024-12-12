@@ -9,6 +9,7 @@ import kz.bitlab.MainServiceProject.dto.ChapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ public class ChapterController {
 
     @Operation(summary = "Создать новую главу", description = "Создает новую главу и сохраняет её в базе данных")
     @ApiResponse(responseCode = "200", description = "Глава успешно создана")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<ChapterDto> createChapter(@RequestBody ChapterDto chapterDto) {
         ChapterDto createdChapter = chapterService.createChapter(chapterDto);
@@ -57,6 +59,7 @@ public class ChapterController {
             @ApiResponse(responseCode = "200", description = "Глава успешно обновлена"),
             @ApiResponse(responseCode = "404", description = "Глава с таким ID не найдена")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ChapterDto> updateChapter(@PathVariable Long id, @Validated @RequestBody ChapterDto chapterDto) {
         try {
@@ -72,7 +75,8 @@ public class ChapterController {
             @ApiResponse(responseCode = "204", description = "Глава успешно удалена"),
             @ApiResponse(responseCode = "404", description = "Глава с таким ID не найдена")
     })
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteChapter(@PathVariable Long id) {
         try {
             chapterService.deleteChapter(id);

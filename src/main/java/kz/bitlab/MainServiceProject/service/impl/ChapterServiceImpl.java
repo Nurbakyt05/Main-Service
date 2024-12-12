@@ -9,8 +9,8 @@ import kz.bitlab.MainServiceProject.mapper.ChapterMapper;
 import kz.bitlab.MainServiceProject.repositories.ChapterRepository;
 import kz.bitlab.MainServiceProject.repositories.CourseRepository;
 import kz.bitlab.MainServiceProject.service.ChapterService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +19,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class ChapterServiceImpl implements ChapterService {
-    @Autowired
-    private ChapterRepository chapterRepository;
-    @Autowired
-    private CourseRepository courseRepository;
 
-    @Autowired
-    private ChapterMapper chapterMapper;
+    private final ChapterRepository chapterRepository;
+    private final CourseRepository courseRepository;
+    private final ChapterMapper chapterMapper;
+
 
     @Override
     public List<ChapterDto> getAllChapters() {

@@ -22,6 +22,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.
                                 requestMatchers("/user/create").hasAnyAuthority("ROLE_ADMIN").
+
+                                requestMatchers("/course/save").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/course/courses/").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/course/delete/").hasAnyAuthority("ROLE_ADMIN").
+
+                                requestMatchers("/chapter/save").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/chapter/update/").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/chapter/delete/").hasAnyAuthority("ROLE_ADMIN").
+
                                 requestMatchers("/user/update").permitAll().
                                 requestMatchers("/user/sign-in").permitAll().
                                 requestMatchers("/user/refresh").permitAll().

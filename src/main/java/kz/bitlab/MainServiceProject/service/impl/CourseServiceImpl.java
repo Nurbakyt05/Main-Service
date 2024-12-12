@@ -27,7 +27,6 @@ public class CourseServiceImpl implements CourseService {
         log.info("Fetching all courses from the database");
 
         try {
-            log.debug("Course data: {}", courseRepository.findAll());
             return courseRepository.findAll()
                     .stream()
                     .map(courseMapper::entityToDto)
@@ -40,24 +39,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto getCourseById(Long id) {
-        log.info("Fetching course with ID: {}", id);
 
-        try {
-            CourseEntity courseEntity = courseRepository.findById(id)
-                    .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + id));
-            log.debug("Course data: {}", courseEntity);
+        CourseEntity courseEntity = courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + id));
 
-            return courseMapper.entityToDto(courseEntity);
-        } catch (CourseNotFoundException e) {
-            log.error("Course with ID {} not found: {}", id, e.getMessage());
-            throw e;
-        }
+        return courseMapper.entityToDto(courseEntity);
     }
 
     @Override
     public CourseDto createCourse(CourseDto courseDto) {
-        log.info("Creating new course with name: {}", courseDto.getName());
-        log.debug("Course data to be saved: {}", courseDto);
         CourseEntity courseEntity = courseMapper.dtoToEntity(courseDto);
         CourseEntity savedCourseEntity = courseRepository.save(courseEntity);
         log.info("Course with name '{}' created successfully", savedCourseEntity.getName());
@@ -66,26 +56,20 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto updateCourse(Long id, CourseDto courseDto) {
-        log.info("Updating course with ID: {}", id);
 
-        try {
-            CourseEntity existingCourse = courseRepository.findById(id)
-                    .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + id));
-            log.debug("Existing course data: {}", existingCourse);
-            courseMapper.dtoToEntity(courseDto, existingCourse);
-            CourseEntity updatedCourseEntity = courseRepository.save(existingCourse);
-            log.info("Course with ID '{}' updated successfully", updatedCourseEntity.getId());
-            return courseMapper.entityToDto(updatedCourseEntity);
-        } catch (CourseNotFoundException e) {
-            log.error("Course with ID {} not found: {}", id, e.getMessage());
-            throw e;
-        }
+        CourseEntity existingCourse = courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + id));
+
+        courseMapper.dtoToEntity(courseDto, existingCourse);
+        CourseEntity updatedCourseEntity = courseRepository.save(existingCourse);
+        log.info("Course with ID '{}' updated successfully", updatedCourseEntity.getId());
+        return courseMapper.entityToDto(updatedCourseEntity);
     }
 
     @Override
     public void deleteCourse(Long id) {
-        log.info("Attempting to delete course with ID: {}", id);
 
+        // todo поменять
         if (!courseRepository.existsById(id)) {
             log.error("Course with ID {} not found, cannot delete", id);
             throw new CourseNotFoundException("Course not found with ID: " + id);

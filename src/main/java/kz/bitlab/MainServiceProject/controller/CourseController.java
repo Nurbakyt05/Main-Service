@@ -9,6 +9,7 @@ import kz.bitlab.MainServiceProject.dto.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class CourseController {
 
     @Operation(summary = "Создать новый курс", description = "Создает новый курс и сохраняет его в базе данных")
     @ApiResponse(responseCode = "201", description = "Курс успешно создан")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
         CourseDto createdCourse = courseService.createCourse(courseDto);
@@ -56,6 +58,7 @@ public class CourseController {
             @ApiResponse(responseCode = "200", description = "Курс успешно обновлен"),
             @ApiResponse(responseCode = "404", description = "Курс с таким ID не найден")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/courses/{id}")
     public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
         try {
@@ -71,7 +74,8 @@ public class CourseController {
             @ApiResponse(responseCode = "204", description = "Курс успешно удален"),
             @ApiResponse(responseCode = "404", description = "Курс с таким ID не найден")
     })
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         try {
             courseService.deleteCourse(id);
