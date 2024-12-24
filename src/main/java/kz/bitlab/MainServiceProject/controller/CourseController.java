@@ -43,7 +43,6 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
     @Operation(summary = "Создать новый курс", description = "Создает новый курс и сохраняет его в базе данных")
     @ApiResponse(responseCode = "201", description = "Курс успешно создан")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -52,7 +51,6 @@ public class CourseController {
         CourseDto createdCourse = courseService.createCourse(courseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
     }
-
     @Operation(summary = "Обновить существующий курс", description = "Обновляет данные курса по его ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Курс успешно обновлен"),
@@ -68,7 +66,6 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
     @Operation(summary = "Удалить курс", description = "Удаляет курс по ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Курс успешно удален"),

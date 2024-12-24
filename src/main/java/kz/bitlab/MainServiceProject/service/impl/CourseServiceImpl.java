@@ -68,7 +68,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
-
         // todo поменять
         if (!courseRepository.existsById(id)) {
             log.error("Course with ID {} not found, cannot delete", id);

@@ -1,4 +1,3 @@
-version: '3.9'
 
 services:
   main-service:
@@ -11,7 +10,7 @@ services:
       - keycloak
 
   postgres:
-    image: postgres:latest
+    image: postgres:17.2
     environment:
       POSTGRES_DB: MainServiceDataBase
       POSTGRES_USER: postgres
@@ -38,5 +37,17 @@ services:
     depends_on:
       - postgres
 
+  app-postgres: # Новый сервис базы данных для самого приложения
+      image: postgres:17.2
+      environment:
+        POSTGRES_DB: AppCourseDataBase  # Название базы данных для приложения
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: NURIK2005
+      ports:
+        - "5433:5432"  # Используем другой порт для второго контейнера PostgreSQL
+      volumes:
+        - app_postgres_data:/var/lib/postgresql/data  # Новый том для хранения данных приложения
+
 volumes:
   postgres_data:
+  app_postgres_data:
