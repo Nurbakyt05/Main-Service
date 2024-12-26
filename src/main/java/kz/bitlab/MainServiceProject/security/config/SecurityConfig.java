@@ -31,6 +31,10 @@ public class SecurityConfig {
                                 requestMatchers("/chapter/update/").hasAnyAuthority("ROLE_ADMIN").
                                 requestMatchers("/chapter/delete/").hasAnyAuthority("ROLE_ADMIN").
 
+                                requestMatchers("/lesson/save").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/lesson/update/").hasAnyAuthority("ROLE_ADMIN").
+                                requestMatchers("/lesson/delete/").hasAnyAuthority("ROLE_ADMIN").
+
                                 requestMatchers("/user/update").permitAll().
                                 requestMatchers("/user/sign-in").permitAll().
                                 requestMatchers("/user/refresh").permitAll().

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,7 @@ public class LessonController {
 
     @Operation(summary = "Создать новый урок", description = "Создает новый урок с указанным ID и сохраняет его в базе данных")
     @ApiResponse(responseCode = "201", description = "Урок успешно создан")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<LessonDto> createLesson(@RequestBody LessonDto lessonDto) {
         LessonDto createdLesson = lessonService.createLesson(lessonDto);
@@ -59,6 +61,7 @@ public class LessonController {
             @ApiResponse(responseCode = "200", description = "Урок успешно обновлен"),
             @ApiResponse(responseCode = "404", description = "Урок с таким ID не найден")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Object> updateLesson(@PathVariable Long id, @RequestBody LessonDto lessonDto) {
         try {
@@ -78,7 +81,8 @@ public class LessonController {
             @ApiResponse(responseCode = "204", description = "Урок успешно удален"),
             @ApiResponse(responseCode = "404", description = "Урок с таким ID не найден")
     })
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
         try {
             lessonService.deleteLesson(id);
