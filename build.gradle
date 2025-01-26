@@ -38,6 +38,7 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.minio:minio:8.5.11'
 	implementation 'org.mapstruct:mapstruct:1.6.2'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
 	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose', version: '6.3.1'

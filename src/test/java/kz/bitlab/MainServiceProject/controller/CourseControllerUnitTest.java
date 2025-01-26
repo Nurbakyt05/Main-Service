@@ -1,9 +1,9 @@
 package kz.bitlab.MainServiceProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.bitlab.MainServiceProject.dto.CourseDto;
-import kz.bitlab.MainServiceProject.exception.CourseNotFoundException;
-import kz.bitlab.MainServiceProject.service.CourseService;
+import kz.bitlab.MainServiceProject.main.dto.CourseDto;
+import kz.bitlab.MainServiceProject.main.exception.CourseNotFoundException;
+import kz.bitlab.MainServiceProject.main.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;

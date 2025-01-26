@@ -1,12 +1,13 @@
 package kz.bitlab.MainServiceProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.bitlab.MainServiceProject.dto.ChapterDto;
-import kz.bitlab.MainServiceProject.dto.CourseDto;
-import kz.bitlab.MainServiceProject.dto.LessonDto;
-import kz.bitlab.MainServiceProject.exception.GlobalExceptionHandler;
-import kz.bitlab.MainServiceProject.exception.LessonNotFoundException;
-import kz.bitlab.MainServiceProject.service.LessonService;
+import kz.bitlab.MainServiceProject.main.dto.ChapterDto;
+import kz.bitlab.MainServiceProject.main.dto.CourseDto;
+import kz.bitlab.MainServiceProject.main.dto.LessonDto;
+import kz.bitlab.MainServiceProject.main.exception.GlobalExceptionHandler;
+import kz.bitlab.MainServiceProject.main.exception.LessonNotFoundException;
+import kz.bitlab.MainServiceProject.main.controller.LessonController;
+import kz.bitlab.MainServiceProject.main.service.LessonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

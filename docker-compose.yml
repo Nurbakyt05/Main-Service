@@ -1,13 +1,18 @@
-
 services:
   main-service:
-    image: main-service-project-iso
+    image: nurbakytjavadev/main-service-project-iso:v2
     container_name: main-service-project-container
     ports:
       - "8888:8080"
     depends_on:
       - postgres
       - keycloak
+      - minio-service
+    environment:
+      S3_ENDPOINT: http://minio-service:9000
+      S3_ACCESS_KEY: root
+      S3_SECRET_KEY: Minio_Java_Middle_2024
+      S3_BUCKET_NAME: dev-bucket
 
   postgres:
     image: postgres:17.2
@@ -37,17 +42,47 @@ services:
     depends_on:
       - postgres
 
-  app-postgres: # Новый сервис базы данных для самого приложения
-      image: postgres:17.2
-      environment:
-        POSTGRES_DB: AppCourseDataBase  # Название базы данных для приложения
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: NURIK2005
-      ports:
-        - "5433:5432"  # Используем другой порт для второго контейнера PostgreSQL
-      volumes:
-        - app_postgres_data:/var/lib/postgresql/data  # Новый том для хранения данных приложения
+  app-postgres:
+    image: postgres:17.2
+    environment:
+      POSTGRES_DB: AppCourseDataBase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: NURIK2005
+    ports:
+      - "5433:5432"
+    volumes:
+      - app_postgres_data:/var/lib/postgresql/data
+
+  minio-service:
+    image: quay.io/minio/minio
+    container_name: minio_service_container
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: Minio_Java_Middle_2024
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  minio-setup:
+    image: minio/mc
+    depends_on:
+      - minio-service
+    environment:
+      MC_HOST: http://root:Minio_Java_Middle_2024@minio-service:9000
+    entrypoint: >
+      /bin/sh -c "
+        echo Starting Minio...
+        /usr/bin/minio server /data &
+        sleep 5;
+        mc alias set minio http://localhost:9000 root Minio_Java_Middle_2024;
+        mc mb minio/dev-bucket;
+        wait
+      "
 
 volumes:
   postgres_data:
   app_postgres_data:
+  minio_data:

@@ -1,9 +1,9 @@
 package kz.bitlab.MainServiceProject.controller;
 
-import kz.bitlab.MainServiceProject.dto.ChapterDto;
-import kz.bitlab.MainServiceProject.dto.CourseDto;
-import kz.bitlab.MainServiceProject.exception.ChapterNotFoundException;
-import kz.bitlab.MainServiceProject.service.ChapterService;
+import kz.bitlab.MainServiceProject.main.dto.ChapterDto;
+import kz.bitlab.MainServiceProject.main.dto.CourseDto;
+import kz.bitlab.MainServiceProject.main.exception.ChapterNotFoundException;
+import kz.bitlab.MainServiceProject.main.service.ChapterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

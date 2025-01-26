@@ -25,13 +25,11 @@ public class KeycloakRoleAndUserInitializer {
     @PostConstruct
     public void addInitialUsersAndRoles() {
         try {
-            // Создаем роли в Keycloak
             createRoleIfNotExists("ROLE_ADMIN");
             createRoleIfNotExists("ROLE_TEACHER");
             createRoleIfNotExists("ROLE_USER");
 
-            // Создаем пользователей
-            createUserIfNotExists("user-admin", "nurbakit1605@gmail.com", "adminPassword", "ROLE_ADMIN");
+            createUserIfNotExists("nurik", "nurbakit0505@gmail.com", "nurik", "ROLE_ADMIN");
             createUserIfNotExists("teacher", "nurbakit1605@gmail.com", "teacherPassword", "ROLE_TEACHER");
             createUserIfNotExists("user", "nurbakit1605@gmail.com", "userPassword", "ROLE_USER");
 
@@ -50,7 +48,13 @@ public class KeycloakRoleAndUserInitializer {
     }
 
     private void createUserIfNotExists(String username, String email, String password, String roleName) {
-        UserRepresentation user = keycloak.realm(realm).users().search(username).stream().findFirst().orElse(null);
+        UserRepresentation user = keycloak
+                .realm(realm)
+                .users()
+                .search(username)
+                .stream()
+                .findFirst()
+                .orElse(null);
 
         if (user == null) {
             user = new UserRepresentation();
